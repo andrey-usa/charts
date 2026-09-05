@@ -1,0 +1,223 @@
+:root {
+  --page: #f4f5f8;
+  --ink: #111827;
+  --muted: #6b7280;
+  --line: #e3e6ec;
+  --accent: #4f6bed;
+  --surface: #ffffff;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.55 Aptos, Calibri, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 24px 72px;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 34px;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 32px 0 12px;
+}
+
+.switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.switcher button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.switcher button:hover { color: var(--ink); }
+
+.switcher button.is-active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.export {
+  border: 0;
+  background: var(--ink);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.export:disabled { opacity: 0.55; cursor: progress; }
+
+.active-note {
+  margin: 0 0 24px;
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 78ch;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.metric-card {
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(154, 163, 178, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Line heights are pinned because the card is a fixed height derived from the
+   PPTX layout; the browser default (1.55) overflows it by a few pixels. */
+.metric-card__label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  flex: 1;
+}
+
+.metric-card__row span { line-height: 1.15; }
+.metric-card__row span:first-child { font-weight: 700; letter-spacing: -0.015em; }
+.metric-card__row span:last-child { font-weight: 600; white-space: nowrap; }
+
+.metric-card__spark { line-height: 0; }
+
+.prose { margin: 56px 0 20px; max-width: 72ch; }
+.prose h2 { font-size: 19px; margin: 0 0 10px; letter-spacing: -0.01em; }
+.prose p { margin: 0 0 12px; color: var(--muted); }
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  background: #eceff4;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+.table-wrap { overflow-x: auto; }
+
+.cmp {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.cmp th, .cmp td {
+  text-align: left;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.cmp thead th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.cmp tbody tr { cursor: pointer; }
+.cmp tbody tr:hover { background: #fafbfd; }
+.cmp tbody tr.is-active { background: #f0f3fe; }
+.cmp tbody tr:last-child td { border-bottom: 0; }
+.cmp .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.muted { color: var(--muted); font-weight: 400; }
+
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill--native { background: #dcfce7; color: #15803d; }
+.pill--vector-image { background: #e0e7ff; color: #3730a3; }
+.pill--raster { background: #fee2e2; color: #b91c1c; }
+
+.legend {
+  margin: 16px 0 0;
+  display: grid;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.legend div { display: flex; gap: 10px; align-items: baseline; }
+.legend dt { flex: 0 0 118px; }
+.legend dd { margin: 0; }
+
+footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.grid--loading {
+  min-height: 160px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+}

@@ -1,0 +1,38 @@
+{
+  "name": "charts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "verify:pptx": "esbuild scripts/verify-pptx.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist-verify/verify.cjs --log-level=warning && node dist-verify/verify.cjs",
+    "measure:bundles": "node scripts/measure-bundles.mjs",
+    "verify:renderers": "node scripts/verify-renderers.mjs"
+  },
+  "dependencies": {
+    "@observablehq/plot": "^0.6.17",
+    "@visx/group": "^3.12.0",
+    "@visx/scale": "^3.12.0",
+    "@visx/shape": "^3.12.0",
+    "chart.js": "^4.4.7",
+    "d3-shape": "^3.2.0",
+    "echarts": "^6.1.0",
+    "pptxgenjs": "^3.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.0",
+    "uplot": "^1.6.31"
+  },
+  "devDependencies": {
+    "@types/d3-shape": "^3.1.7",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "playwright-core": "^1.63.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}
