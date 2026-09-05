@@ -11,6 +11,7 @@ import type { RendererEntry } from '../core/types';
 export const RENDERERS: readonly RendererEntry[] = [
   {
     id: 'svg',
+    supports: ['native', 'vector', 'raster'],
     name: 'Hand-rolled SVG',
     version: 'd3-shape 3.2',
     tech: 'SVG',
@@ -21,6 +22,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'uplot',
+    supports: ['native', 'raster'],
     name: 'uPlot',
     version: '1.6',
     tech: 'Canvas',
@@ -31,6 +33,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'echarts',
+    supports: ['native', 'vector', 'raster'],
     name: 'Apache ECharts',
     version: '6.1',
     tech: 'SVG',
@@ -41,6 +44,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'recharts',
+    supports: ['native', 'vector', 'raster'],
     name: 'Recharts',
     version: '2.15',
     tech: 'SVG (React)',
@@ -51,6 +55,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'visx',
+    supports: ['native', 'vector', 'raster'],
     name: 'visx',
     version: '3.12',
     tech: 'SVG (React)',
@@ -61,6 +66,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'plot',
+    supports: ['native', 'vector', 'raster'],
     name: 'Observable Plot',
     version: '0.6',
     tech: 'SVG',
@@ -71,6 +77,7 @@ export const RENDERERS: readonly RendererEntry[] = [
   },
   {
     id: 'chartjs',
+    supports: ['native', 'raster'],
     name: 'Chart.js',
     version: '4.5',
     tech: 'Canvas',

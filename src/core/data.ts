@@ -80,4 +80,29 @@ export const CARDS: readonly MetricCardSpec[] = [
     lowerIsBetter: true,
     series: buildSeries(MONTHS, { start: 610, drift: -0.008, noise: 0.08, seed: 67 }),
   },
+  {
+    id: 'gross-margin',
+    label: 'Gross margin',
+    format: 'percent',
+    series: buildSeries(MONTHS, { start: 71.2, drift: 0.004, noise: 0.03, seed: 71 }),
+  },
+  {
+    id: 'trials',
+    label: 'Trial signups',
+    format: 'number',
+    series: buildSeries(MONTHS, { start: 940, drift: 0.022, noise: 0.11, seed: 83 }),
+  },
+  {
+    id: 'ticket-time',
+    label: 'First response time',
+    format: 'duration',
+    lowerIsBetter: true,
+    series: buildSeries(MONTHS, { start: 5400, drift: -0.03, noise: 0.09, seed: 89 }),
+  },
+  {
+    id: 'expansion',
+    label: 'Expansion revenue',
+    format: 'currency',
+    series: buildSeries(MONTHS, { start: 7800, drift: 0.041, noise: 0.13, seed: 97 }),
+  },
 ];

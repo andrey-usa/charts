@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "verify:pptx": "esbuild scripts/verify-pptx.ts --bundle --platform=node --format=cjs --packages=external --outfile=dist-verify/verify.cjs --log-level=warning && node dist-verify/verify.cjs",
     "measure:bundles": "node scripts/measure-bundles.mjs",
-    "verify:renderers": "node scripts/verify-renderers.mjs"
+    "verify:renderers": "node scripts/verify-renderers.mjs",
+    "bench:export": "node scripts/bench-export.mjs"
   },
   "dependencies": {
     "@observablehq/plot": "^0.6.17",

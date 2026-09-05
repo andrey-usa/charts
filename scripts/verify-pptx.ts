@@ -11,7 +11,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import JSZip from 'jszip';
 import { CARDS } from '../src/core/data';
-import { buildDeck } from '../src/pptx/deck';
+import { exportMetricDeck } from '../src/pptx/export';
 
 const OUT = resolve(process.cwd(), 'dist-verify/metric-cards.pptx');
 
@@ -27,8 +27,13 @@ const check = (name: string, pass: boolean, detail: string): void => {
 };
 
 async function main(): Promise<void> {
-  const pptx = buildDeck(CARDS, { title: 'Metric cards — native PPTX export' });
-  const buf = (await pptx.write({ outputType: 'nodebuffer' })) as Buffer;
+  const result = await exportMetricDeck({
+    cards: CARDS,
+    strategy: 'native',
+    title: 'Metric cards — native PPTX export',
+    subtitle: 'Trailing 12 months · dashed line is the period average',
+  });
+  const buf = Buffer.from(result.data);
 
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, buf);
@@ -82,16 +87,54 @@ async function main(): Promise<void> {
   );
   check('axes are deleted (sparkline look)', hiddenAxes === chartParts.length, `${hiddenAxes}/${chartParts.length}`);
 
-  const slideXml = await zip.file(slides[0]!)!.async('string');
+  // The deck paginates, so every assertion below spans all slides rather than
+  // just the first — an earlier version read slide 1 and undercounted the cards.
+  let slideXml = '';
+  for (const name of slides) slideXml += await zip.file(name)!.async('string');
+
+  const roundRects = (slideXml.match(/roundRect/g) ?? []).length;
   check(
     'card frames are native roundRect shapes',
-    (slideXml.match(/roundRect/g) ?? []).length >= CARDS.length,
-    `${(slideXml.match(/roundRect/g) ?? []).length} roundRect shape(s)`,
+    roundRects >= CARDS.length,
+    `${roundRects} roundRect shape(s) across ${slides.length} slide(s)`,
   );
   check(
     'card text is real text, not outlines',
     slideXml.includes('<a:t>') && slideXml.includes('MONTHLY RECURRING REVENUE'),
     'found <a:t> runs including the first card label',
+  );
+
+  // Delta triangles must survive as text glyphs, not be dropped or outlined.
+  const triangles = (slideXml.match(/[▲▼■]/g) ?? []).length;
+  // Exactly one per card: a `>=` check let a doubled "▲▲ 6.2%" through, because
+  // formatDelta and the card were each prefixing the arrow.
+  check(
+    'exactly one delta triangle per card',
+    triangles === CARDS.length,
+    `${triangles} triangle glyph(s) for ${CARDS.length} card(s)`,
+  );
+
+  // Sentiment colouring: green for good moves, red for bad, per lowerIsBetter.
+  const greens = (slideXml.match(/15803D/g) ?? []).length;
+  const reds = (slideXml.match(/B91C1C/g) ?? []).length;
+  check(
+    'delta text is colour-coded by sentiment',
+    greens + reds >= CARDS.length,
+    `${greens} green + ${reds} red delta run(s)`,
+  );
+
+  // Legend keys are drawn as native line shapes (two per card).
+  const legendLines = (slideXml.match(/<p:cNvSpPr\/>/g) ?? []).length;
+  check(
+    'legend keys are native shapes',
+    slideXml.includes('12-mo avg') && slideXml.includes('Actual'),
+    `legend labels present (${legendLines} shape nodes)`,
+  );
+
+  check(
+    'timeframe caption is on every card',
+    (slideXml.match(/–/g) ?? []).length >= CARDS.length,
+    `${(slideXml.match(/–/g) ?? []).length} timeframe caption(s)`,
   );
 
   const failed = checks.filter((c) => !c.pass);

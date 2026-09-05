@@ -41,21 +41,21 @@ page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 
 await page.goto(base, { waitUntil: 'networkidle' });
 
-const names = await page.$$eval('.switcher button', (bs) => bs.map((b) => b.textContent.trim()));
+const names = await page.$$eval('.switcher[aria-label="Chart library"] button', (bs) => bs.map((b) => b.textContent.trim()));
 const results = [];
 
 for (const name of names) {
   errors.length = 0;
-  await page.click(`.switcher button:text-is("${name}")`);
+  await page.click(`.switcher[aria-label="Chart library"] button:text-is("${name}")`);
   await page.waitForFunction(
-    () => !document.querySelector('.grid--loading') && document.querySelectorAll('.metric-card').length === 6,
+    () => !document.querySelector('.grid--loading') && document.querySelectorAll('.mc').length === 10,
     null,
     { timeout: 15000 },
   );
   // Give canvas renderers a frame to paint before measuring.
   await page.waitForTimeout(250);
 
-  const drew = await page.$$eval('.metric-card__spark', (nodes) =>
+  const drew = await page.$$eval('.mc__spark', (nodes) =>
     nodes.map((n) => {
       const svg = n.querySelector('svg');
       if (svg) {
@@ -79,7 +79,7 @@ for (const name of names) {
   // silently dropped — and a bare "> 0" check waved it through.
   const MIN_SVG_MARKS = 3;
   const ok =
-    drew.length === 6 &&
+    drew.length === 10 &&
     drew.every((d) =>
       d.kind === 'svg' ? d.marks >= MIN_SVG_MARKS : d.kind === 'canvas' ? d.marks > 0 : false,
     );
@@ -106,7 +106,7 @@ try {
   const charts = files.filter((n) => /^ppt\/charts\/chart\d+\.xml$/.test(n));
   const media = files.filter((n) => n.startsWith('ppt/media/'));
   exportResult = {
-    ok: download.suggestedFilename().endsWith('.pptx') && charts.length === 6 && media.length === 0,
+    ok: download.suggestedFilename().endsWith('.pptx') && charts.length === 10 && media.length === 0,
     detail: `${download.suggestedFilename()}, ${charts.length} chart part(s), ${media.length} media file(s), ${(buf.byteLength / 1024).toFixed(0)} KB`,
   };
 } catch (err) {

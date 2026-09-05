@@ -51,14 +51,26 @@ export interface SparklineProps {
   readonly areaColor: string;
 }
 
+/**
+ * How the sparkline reaches the slide. Defined here rather than in the PPTX
+ * layer so the renderer registry can declare what each library supports without
+ * importing the exporter.
+ */
+export type ExportStrategy = 'native' | 'vector' | 'raster';
+
 export interface RendererEntry {
   readonly id: string;
   readonly name: string;
   readonly version: string;
   readonly tech: 'SVG' | 'Canvas' | 'SVG (React)' | 'Canvas (WebGL-capable)';
   readonly bundleKb: number;
-  /** How the library's output survives a PowerPoint export. */
+  /** The best fidelity this library's own output can reach in a deck. */
   readonly pptxFidelity: 'native' | 'vector-image' | 'raster';
+  /**
+   * Export strategies this library can actually serve. `native` is always
+   * available because it rebuilds from the data; `vector` needs SVG output.
+   */
+  readonly supports: readonly ExportStrategy[];
   readonly note: string;
   /** Lazily imported so switching libraries loads only that library's chunk. */
   readonly Component: LazyExoticComponent<ComponentType<SparklineProps>>;

@@ -41,7 +41,10 @@ export function formatValue(value: number, format: ValueFormat): string {
     case 'percent':
       return `${value.toFixed(1)}%`;
     case 'duration':
-      return `${value.toFixed(0)}ms`;
+      // Step the unit so a 4-second response time doesn't read as "4089ms".
+      if (value < 1000) return `${value.toFixed(0)}ms`;
+      if (value < 60_000) return `${(value / 1000).toFixed(1)}s`;
+      return `${(value / 60_000).toFixed(1)}min`;
     case 'number':
       return value >= 1000
         ? `${(value / 1000).toFixed(1)}k`
@@ -49,14 +52,36 @@ export function formatValue(value: number, format: ValueFormat): string {
   }
 }
 
-/** e.g. "▲ 4.2%" — the arrow is a text glyph so it stays vector in PPTX. */
+/**
+ * The delta magnitude alone, e.g. "4.2%".
+ *
+ * The direction triangle is deliberately NOT included: both renderers draw it
+ * themselves so it can be a separate glyph, and having it here too silently
+ * produced "▲▲ 4.2%" on every card.
+ */
 export function formatDelta(stats: MetricStats): string {
-  const arrow = stats.direction === 'up' ? '▲' : stats.direction === 'down' ? '▼' : '■';
-  return `${arrow} ${Math.abs(stats.deltaPct).toFixed(1)}%`;
+  return `${Math.abs(stats.deltaPct).toFixed(1)}%`;
+}
+
+/** The direction triangle. A text glyph, so it stays vector in PPTX. */
+export function deltaArrow(stats: MetricStats): string {
+  return stats.direction === 'up' ? '▲' : stats.direction === 'down' ? '▼' : '■';
 }
 
 export function monthLabel(month: string): string {
   const [, m] = month.split('-');
   const names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   return names[Number(m) - 1] ?? month;
+}
+
+/** e.g. "Oct 2025 – Sep 2026", for the card's timeframe caption. */
+export function timeframeLabel(series: readonly { month: string }[]): string {
+  const first = series[0]?.month;
+  const last = series[series.length - 1]?.month;
+  if (!first || !last) return '';
+  const fmt = (m: string): string => {
+    const [y, mm] = m.split('-');
+    return `${monthLabel(`${y}-${mm}`)} ${y}`;
+  };
+  return `${fmt(first)} – ${fmt(last)}`;
 }

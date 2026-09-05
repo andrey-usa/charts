@@ -1,7 +1,7 @@
 /**
  * Design tokens expressed in POINTS, because PPTX is a point/inch format and the
- * browser is the side that has to adapt. Every renderer and the PPTX writer read
- * from here, so a change lands in both outputs at once.
+ * browser is the side that has to adapt. Every renderer, the web card and the
+ * PPTX writer read from here, so a change lands in every output at once.
  */
 
 /** CSS pixels per point (96dpi / 72pt). */
@@ -12,23 +12,41 @@ export const IN_PER_PT = 1 / 72;
 export const pxOf = (pt: number): number => pt * PX_PER_PT;
 export const inchOf = (pt: number): number => pt * IN_PER_PT;
 
+/**
+ * Card geometry, in points, laid out top to bottom. The `y` values are offsets
+ * from the card's top edge so the web and PPTX renderers place rows identically
+ * instead of each doing its own stacking maths.
+ */
 export const card = {
-  widthPt: 236,
-  heightPt: 118,
+  widthPt: 250,
+  heightPt: 132,
   paddingPt: 14,
   radiusPt: 8,
-  sparkHeightPt: 40,
-  /** Gap between the value block and the sparkline. */
-  gapPt: 10,
+
+  labelYPt: 14,
+  labelHPt: 11,
+
+  valueYPt: 27,
+  valueHPt: 34,
+
+  sparkYPt: 64,
+  sparkHPt: 38,
+
+  legendYPt: 106,
+  legendHPt: 11,
 } as const;
+
+export const innerWidthPt = card.widthPt - card.paddingPt * 2;
 
 export const type = {
   /** Must exist in PowerPoint or the exported deck reflows. */
   family: 'Aptos, Calibri, Segoe UI, system-ui, sans-serif',
   pptxFamily: 'Aptos',
   labelPt: 8.5,
-  valuePt: 26,
-  deltaPt: 9.5,
+  timeframePt: 7.5,
+  valuePt: 25,
+  deltaPt: 10,
+  legendPt: 7.5,
   footnotePt: 7.5,
 } as const;
 
@@ -37,6 +55,7 @@ export const palette = {
   cardBg: 'FFFFFF',
   cardBorder: 'E3E6EC',
   label: '6B7280',
+  timeframe: '9AA3B2',
   value: '111827',
   line: '4F6BED',
   lineArea: 'DDE3FB',
@@ -64,3 +83,9 @@ export function plotDomain(values: readonly number[], average: number): { min: n
   const pad = span * PLOT_PADDING_RATIO;
   return { min: lo - pad, max: hi + pad };
 }
+
+/** Legend copy, shared by the card chrome and the PPTX writer. */
+export const legend = {
+  actual: 'Actual',
+  average: '12-mo avg',
+} as const;
